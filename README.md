@@ -5,7 +5,22 @@ A Node.js parcel-delivery simulation using a shared event pool.
 Implemented: vendor pickup requests, driver delivery simulation, customer
 confirmation, timestamped logging through a shared event pool, and automated tests.
 
-Pending: GitHub Actions.
+Pending: successful GitHub Actions run and final submission.
+
+## Setup and Usage
+
+Requires Node.js and npm.  
+Local verification used Node.js 20.20.2.
+
+Install dependencies and run the simulation:
+
+```bash
+npm ci
+npm start
+```
+
+Each run creates one order, logs its delivery states, thanks the customer,
+and exits.
 
 ## Testing
 
@@ -15,8 +30,11 @@ Run the handler tests with coverage:
 npm test -- --runInBand
 ```
 
-Tests check vendor order payloads and customer confirmation, driver logs
-and state emissions, and timestamped global logging.
+Unit tests check vendor payloads and customer confirmation, driver logs
+and state emissions, and timestamped global logging. A connected-flow
+test checks the registered modules together.
+
+GitHub Actions is configured to run the suite on pushes and pull requests.
 
 ## UML
 
@@ -97,7 +115,9 @@ Top to bottom
 - added shared event pool and timestamped package logging; `eventPool.js`, `hub.js`.
 - connected vendor pickup requests, driver delivery, and customer confirmation; `vendor/`, `driver/`, `hub.js`.
 - added vendor, driver, and logger unit tests with application coverage reporting; `vendor/vendor-handler.test.js`, `driver/driver-handler.test.js`, `hub.test.js`, `jest.config.js`.
+- verified connected vendor-to-driver delivery and customer confirmation; `delivery-flow.test.js`.
+- configured automated tests for pushes and pull requests; `.github/workflows/node.yml`.
   
 ## AI Assistance
 
-- Codex supplied UML drafts, architecture review, setup guidance, and event-pool, logger, vendor, and driver code.
+- Codex supplied UML drafts, architecture review, setup guidance, application code, unit and connected-flow tests, coverage configuration, and the GitHub Actions workflow.

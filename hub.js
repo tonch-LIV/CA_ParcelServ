@@ -19,4 +19,11 @@ eventPool.on('pickup', (payload) => logEvent('pickup', payload));
 eventPool.on('in-transit', (payload) => logEvent('in-transit', payload));
 eventPool.on('delivered', (payload) => logEvent('delivered', payload));
 
+if (require.main === module) {
+  require('./driver');
+  const requestPickup = require('./vendor');
+
+  requestPickup('Test Flowers');
+}
+
 module.exports = logEvent;

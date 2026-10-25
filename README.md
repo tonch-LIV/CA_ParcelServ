@@ -2,8 +2,10 @@
 
 A Node.js parcel-delivery simulation using a shared event pool.
 
-Implemented: global logging for `pickup`, `in-transit`, and `delivered`.
-Pending: vendor and driver handlers, automated tests, and GitHub Actions.
+Implemented: vendor pickup requests, driver delivery simulation, customer
+confirmation, and timestamped logging through a shared event pool.
+
+Pending: automated tests and GitHub Actions.
 
 ## UML
 
@@ -82,7 +84,8 @@ Top to bottom
   - installed and configured `jest` as dev dependency and application scripts -> `package-lock.json`,
   - updated `main`, `script.start`, and `.test`, as well as `description`,
 - added shared event pool and timestamped package logging; `eventPool.js`, `hub.js`.
+- connected vendor pickup requests, driver delivery, and customer confirmation; `vendor/`, `driver/`, `hub.js`.
   
 ## AI Assistance
 
-- Codex supplied UML drafts, architecture review, setup guidance, and the event-pool/logger code.
+- Codex supplied UML drafts, architecture review, setup guidance, and event-pool, logger, vendor, and driver code.

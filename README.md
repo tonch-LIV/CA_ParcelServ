@@ -5,7 +5,9 @@ A Node.js parcel-delivery simulation using a shared event pool.
 Implemented: vendor pickup requests, driver delivery simulation, customer
 confirmation, timestamped logging through a shared event pool, and automated tests.
 
-Pending: successful GitHub Actions run and final submission.
+GitHub Actions run successful.
+
+Pending: final submission.
 
 ## Setup and Usage
 

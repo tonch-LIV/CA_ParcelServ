@@ -3,9 +3,20 @@
 A Node.js parcel-delivery simulation using a shared event pool.
 
 Implemented: vendor pickup requests, driver delivery simulation, customer
-confirmation, and timestamped logging through a shared event pool.
+confirmation, timestamped logging through a shared event pool, and automated tests.
 
-Pending: automated tests and GitHub Actions.
+Pending: GitHub Actions.
+
+## Testing
+
+Run the handler tests with coverage:
+
+```bash
+npm test -- --runInBand
+```
+
+Tests check vendor order payloads and customer confirmation, driver logs
+and state emissions, and timestamped global logging.
 
 ## UML
 
@@ -85,6 +96,7 @@ Top to bottom
   - updated `main`, `script.start`, and `.test`, as well as `description`,
 - added shared event pool and timestamped package logging; `eventPool.js`, `hub.js`.
 - connected vendor pickup requests, driver delivery, and customer confirmation; `vendor/`, `driver/`, `hub.js`.
+- added vendor, driver, and logger unit tests with application coverage reporting; `vendor/vendor-handler.test.js`, `driver/driver-handler.test.js`, `hub.test.js`, `jest.config.js`.
   
 ## AI Assistance
 

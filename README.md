@@ -8,9 +8,11 @@ customer confirmation, timestamped server logging, and Socket.IO handler tests.
 
 Lab 11 and Lab 12 GitHub Actions passed.
 
-Lab 11 submitted. PR [Link](https://github.com/tonch-LIV/CA_ParcelServ/pull/1)  
-Lab 12 network flow, local tests, and CI verified; pending submission.
-PR [Link](https://github.com/tonch-LIV/CA_ParcelServ/pull/2)
+Lab 11 submitted.  
+PR [Link](https://github.com/tonch-LIV/CA_ParcelServ/pull/1)  
+Lab 12 network flow, local tests, and CI verified; Submitted.  
+PR [Link](https://github.com/tonch-LIV/CA_ParcelServ/pull/2)  
+Lab 13: queue storage verified; pending server/client integration, catch-up verification, and updated handler tests.
 
 ## Setup and Usage
 
@@ -163,6 +165,8 @@ Top to bottom
   - corrected disconnect cleanup and adapted tests for socket emissions and server routing; `vendor/index.js`, client handler tests, `server/server-handler.test.js`.
   - retired the Node event pool and obsolete tests; `eventPool.js`, `hub.js`, `hub.test.js`, `delivery-flow.test.js`.
   - updated application coverage and network architecture documentation; `jest.config.js`, `README.md`.
+- created assignment branch for message-queue implementation; `queues`.
+  - added notification storage, non-destructive retrieval, and acknowledgment removal with unit tests; `server/queue.js`, `server/queue.test.js`.
 
 ## AI Assistance
 

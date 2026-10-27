@@ -12,7 +12,7 @@ Lab 11 submitted.
 PR [Link](https://github.com/tonch-LIV/CA_ParcelServ/pull/1)  
 Lab 12 network flow, local tests, and CI verified; Submitted.  
 PR [Link](https://github.com/tonch-LIV/CA_ParcelServ/pull/2)  
-Lab 13 queue storage, offline catch-up, acknowledgment removal, local tests, and CI verified; pending submission.  
+Lab 13 queue storage, offline catch-up, acknowledgment removal, local tests, and CI verified; Submitted.  
 PR [Link](https://github.com/tonch-LIV/CA_ParcelServ/pull/3)
 
 ## Setup and Usage

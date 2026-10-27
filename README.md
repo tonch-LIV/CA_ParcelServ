@@ -12,30 +12,36 @@ Lab 11 submitted.
 PR [Link](https://github.com/tonch-LIV/CA_ParcelServ/pull/1)  
 Lab 12 network flow, local tests, and CI verified; Submitted.  
 PR [Link](https://github.com/tonch-LIV/CA_ParcelServ/pull/2)  
-Lab 13: queue storage verified; pending server/client integration, catch-up verification, and updated handler tests.
+Lab 13: queued pickup and delivery notifications and offline catch-up
+verified; pending handler-test updates and CI verification.
 
 ## Setup and Usage
 
 Requires Node.js and npm.  
 Local verification used Node.js 20.20.2.
 
-Install dependencies and run the simulation:
+Install dependencies:
 
 ```bash
 npm ci
-npm start
 ```
 
-Start each application in a separate terminal, in this order:
+Start each application in a separate terminal:
 
 1. Server: `npm start`.
-2. Driver: `npm run driver`; wait for its connection message.
-3. Vendor: `npm run vendor`.
+2. Driver: `npm run driver`.
+3. Widgets vendor: `npm run vendor -- acme-widgets`.
+4. Flowers vendor: `npm run vendor -- 1-800-flowers`.
 
-The vendor creates an order immediately, then every five seconds.
-Stop each application with Ctrl+C.
+Vendors create orders immediately, then every five seconds.
+Reconnecting clients retrieve pending notifications automatically.
+Queues remain available while the server stays running.
+Stop applications with Ctrl+C.
 
 ## Testing
+
+Queue-module tests pass; application handler tests are being adapted
+for queued notification payloads.
 
 Run the handler tests with coverage:
 
@@ -167,6 +173,8 @@ Top to bottom
   - updated application coverage and network architecture documentation; `jest.config.js`, `README.md`.
 - created assignment branch for message-queue implementation; `queues`.
   - added notification storage, non-destructive retrieval, and acknowledgment removal with unit tests; `server/queue.js`, `server/queue.test.js`.
+  - integrated subscriptions, acknowledgment removal, and notification replay; `server/handler.js`, `server/index.js`.
+  - added two vendor identities and client catch-up on connection; `vendor/`, `driver/`.
 
 ## AI Assistance
 

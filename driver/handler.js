@@ -3,15 +3,23 @@
 const socket = require('../socket.js');
 
 /**
- * Picks up an order and simulates its delivery.
- * @param {object} order - The order awaiting pickup.
+ * Processes a queued pickup and acknowledges it after delivery.
+ * @param {object} message - Queued pickup notification.
  */
-function handlePickup(order) {
+function handlePickup(message) {
+  const { event, messageId, clientId, order } = message;
+
   console.log(`DRIVER: picked up ${order.orderId}.`);
   socket.emit('in-transit', order);
 
   console.log(`DRIVER: delivered ${order.orderId}.`);
   socket.emit('delivered', order);
+
+  socket.emit('received', {
+    clientId,
+    event,
+    messageId,
+  });
 }
 
 module.exports = handlePickup;

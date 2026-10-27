@@ -21,11 +21,20 @@ function requestPickup(store) {
 }
 
 /**
- * Thanks the customer when their order is delivered.
- * @param {object} order - The delivered order.
+ * Logs a delivery notification and acknowledges receipt.
+ * @param {object} message - Queued delivery notification.
  */
-function handleDelivered(order) {
+function handleDelivered(message) {
+  const { event, messageId, clientId, order } = message;
+
+  console.log(`VENDOR: ${clientId} delivered ${messageId}`, order);
   console.log(`Thank you for your order ${order.customer}`);
+
+  socket.emit('received', {
+    clientId,
+    event,
+    messageId,
+  });
 }
 
 module.exports = { requestPickup, handleDelivered };

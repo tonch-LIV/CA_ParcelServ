@@ -3,20 +3,27 @@
 const socket = require('../socket');
 const { requestPickup, handleDelivered } = require('./handler');
 
-const store = '1-206-flowers';
+const store = process.argv[2] || 'acme-widgets';
 let orderInterval;
 
 socket.on('delivered', handleDelivered);
 
 socket.on('connect', () => {
-  console.log(`VENDOR: connected ${socket.id}`);
+  console.log(`VENDOR: ${store} connected ${socket.id}`);
 
-  socket.emit('join', store);
+  const subscription = {
+    clientId: store,
+    event: 'delivered',
+  };
+
+  socket.emit('subscribe', subscription);
+  socket.emit('getAll', subscription);
+
   requestPickup(store);
 
   orderInterval = setInterval(() => {
     requestPickup(store);
-  }, 5000)
+  }, 5000);
 });
 
 socket.on('disconnect', () => {

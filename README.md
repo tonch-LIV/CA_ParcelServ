@@ -6,32 +6,37 @@ namespace, and vendor-specific rooms.
 Implemented: networked vendor pickup requests, driver delivery simulation,
 customer confirmation, timestamped server logging, and Socket.IO handler tests.
 
-Lab 11 and Lab 12 GitHub Actions passed.
+Lab 11, Lab 12, and Lab 13 GitHub Actions passed.
 
-Lab 11 submitted. PR [Link](https://github.com/tonch-LIV/CA_ParcelServ/pull/1)  
-Lab 12 network flow, local tests, and CI verified; pending submission.
-PR [Link](https://github.com/tonch-LIV/CA_ParcelServ/pull/2)
+Lab 11 submitted.  
+PR [Link](https://github.com/tonch-LIV/CA_ParcelServ/pull/1)  
+Lab 12 network flow, local tests, and CI verified; Submitted.  
+PR [Link](https://github.com/tonch-LIV/CA_ParcelServ/pull/2)  
+Lab 13 queue storage, offline catch-up, acknowledgment removal, local tests, and CI verified; pending submission.  
+PR [Link](https://github.com/tonch-LIV/CA_ParcelServ/pull/3)
 
 ## Setup and Usage
 
 Requires Node.js and npm.  
 Local verification used Node.js 20.20.2.
 
-Install dependencies and run the simulation:
+Install dependencies:
 
 ```bash
 npm ci
-npm start
 ```
 
-Start each application in a separate terminal, in this order:
+Start each application in a separate terminal:
 
 1. Server: `npm start`.
-2. Driver: `npm run driver`; wait for its connection message.
-3. Vendor: `npm run vendor`.
+2. Driver: `npm run driver`.
+3. Widgets vendor: `npm run vendor -- acme-widgets`.
+4. Flowers vendor: `npm run vendor -- 1-800-flowers`.
 
-The vendor creates an order immediately, then every five seconds.
-Stop each application with Ctrl+C.
+Vendors create orders immediately, then every five seconds.
+Reconnecting clients retrieve pending notifications automatically.
+Queues remain available while the server stays running.
+Stop applications with Ctrl+C.
 
 ## Testing
 
@@ -41,14 +46,33 @@ Run the handler tests with coverage:
 npm test -- --runInBand
 ```
 
-Tests check vendor and driver behavior, vendor interval cleanup, server
-logging, pickup broadcasting, and vendor-room routing.
+Tests cover queue retention and isolation, subscriptions, publication, catch-up, acknowledgment removal, client notifications, and interval cleanup.  
 
-Real network delivery was verified manually with three running applications.
+Real network delivery and offline catch-up were verified manually using
+the server, driver, and two vendor applications.  
 
 GitHub Actions is configured to run the suite on pushes and pull requests.
 
 ## UML
+
+### Lab 13 Catch-Up and Acknowledgment
+
+```mermaid
+sequenceDiagram
+    participant Client as Driver or vendor
+    participant Hub as CAPS /caps
+    participant Queue as Queue by store and event
+
+    Note over Hub,Queue: Incoming pickup/delivered notifications are stored before sending
+    Client->>Hub: subscribe(clientId, event)
+    Client->>Hub: getAll(clientId, event)
+    Hub->>Queue: List pending notifications
+    Queue-->>Hub: Retained messages
+    Hub-->>Client: Replay pickup/delivered messages
+    Client->>Client: Process message.order
+    Client->>Hub: received(clientId, event, messageId)
+    Hub->>Queue: Remove acknowledged notification
+```
 
 ### Lab 12 Network Flow
 
@@ -163,6 +187,12 @@ Top to bottom
   - corrected disconnect cleanup and adapted tests for socket emissions and server routing; `vendor/index.js`, client handler tests, `server/server-handler.test.js`.
   - retired the Node event pool and obsolete tests; `eventPool.js`, `hub.js`, `hub.test.js`, `delivery-flow.test.js`.
   - updated application coverage and network architecture documentation; `jest.config.js`, `README.md`.
+- created assignment branch for message-queue implementation; `queues`.
+  - added notification storage, non-destructive retrieval, and acknowledgment removal with unit tests; `server/queue.js`, `server/queue.test.js`.
+  - integrated subscriptions, acknowledgment removal, and notification replay; `server/handler.js`, `server/index.js`.
+  - added two vendor identities and client catch-up on connection; `vendor/`, `driver/`.
+  - adapted handler tests for queued payloads, subscriptions, replay, and acknowledgment removal; client handler tests, `server/server-handler.test.js`.
+  - documented the notification acknowledgment lifecycle; `README.md`.
 
 ## AI Assistance
 

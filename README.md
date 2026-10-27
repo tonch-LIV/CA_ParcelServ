@@ -1,6 +1,7 @@
 # CA_ParcelServ
 
-A Node.js parcel-delivery simulation using a shared event pool.
+A Node.js parcel-delivery simulation using Socket.IO, the `/caps`
+namespace, and vendor-specific rooms.
 
 Implemented: vendor pickup requests, driver delivery simulation, customer
 confirmation, timestamped logging through a shared event pool, and automated tests.
@@ -8,7 +9,7 @@ confirmation, timestamped logging through a shared event pool, and automated tes
 GitHub Actions run successful.
 
 Lab 11 submitted. PR [Link](https://github.com/tonch-LIV/CA_ParcelServ/pull/1)  
-Lab 12 pending: client conversion, network verification, and test updates.
+Lab 12 network flow verified; pending test updates and CI verification.
 
 ## Setup and Usage
 
@@ -22,10 +23,18 @@ npm ci
 npm start
 ```
 
-`npm start` starts the Socket.IO server on port 3000 using the `/caps`
-namespace. Vendor and driver startup commands are pending client conversion.
+Start each application in a separate terminal, in this order:
+
+1. Server: `npm start`.
+2. Driver: `npm run driver`; wait for its connection message.
+3. Vendor: `npm run vendor`.
+
+The vendor creates an order immediately, then every five seconds.
+Stop each application with Ctrl+C.
 
 ## Testing
+
+Lab 12 test adaptation is pending; the existing tests target Lab 11.
 
 Run the handler tests with coverage:
 
@@ -128,7 +137,8 @@ Top to bottom
   - installed `socket.io@4` `socket.io-client@4`; `package.json`, `package-lock.json`.
   - updated project `main`, `start`, and `descriptiom`; `package.json`.
   - added the CAPS namespace, vendor-room joins, and package-event routing; `server/index.js`, `server/handler.js`.
-  
+  - connected vendor and driver through Socket.IO with recurring orders and vendor-room delivery notifications; `socket.js`, `vendor/`, `driver/`.
+
 ## AI Assistance
 
 - Codex supplied UML drafts, architecture review, setup guidance, application code, unit and connected-flow tests, coverage configuration, and the GitHub Actions workflow.

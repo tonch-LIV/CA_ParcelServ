@@ -1,6 +1,6 @@
 'use strict';
 
-const eventPool = require('../eventPool');
+const socket = require('../socket.js');
 
 /**
  * Picks up an order and simulates its delivery.
@@ -8,10 +8,10 @@ const eventPool = require('../eventPool');
  */
 function handlePickup(order) {
   console.log(`DRIVER: picked up ${order.orderId}.`);
-  eventPool.emit('in-transit', order);
+  socket.emit('in-transit', order);
 
   console.log(`DRIVER: delivered ${order.orderId}.`);
-  eventPool.emit('delivered', order);
+  socket.emit('delivered', order);
 }
 
 module.exports = handlePickup;

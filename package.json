@@ -4,6 +4,8 @@
   "description": "CAPS Phase 2 parcel-delivery simulation using Socket.IO",
   "scripts": {
     "start": "node server/index.js",
+    "driver": "node driver/index.js",
+    "vendor": "node vendor/index.js",
     "test": "jest --coverage"
   },
   "keywords": [],

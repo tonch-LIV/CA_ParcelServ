@@ -1,6 +1,12 @@
 'use strict';
 
-const eventPool = require('../eventPool');
+jest.mock('../socket', () => ({
+  emit: jest.fn(),
+  on: jest.fn(),
+  connect: jest.fn(),
+}));
+
+const socket = require('../socket');
 const { requestPickup, handleDelivered } = require('./handler');
 
 describe('vendor handlers', () => {
@@ -8,11 +14,13 @@ describe('vendor handlers', () => {
   let logSpy;
 
   beforeEach(() => {
-    emitSpy = jest.spyOn(eventPool, 'emit').mockReturnValue(true);
+    jest.clearAllMocks();
+    emitSpy = jest.spyOn(socket, 'emit').mockReturnValue(true);
     logSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
   });
 
   afterEach(() => {
+    jest.useRealTimers();
     jest.restoreAllMocks();
   });
 
@@ -44,5 +52,24 @@ describe('vendor handlers', () => {
     expect(logSpy).toHaveBeenCalledWith(
       'Thank you for your order Sam Rivera',
     );
+  });
+
+  test('stops creating orders when the vendor disconnects', () => {
+    jest.useFakeTimers();
+
+    require('./index');
+    const listeners = Object.fromEntries(socket.on.mock.calls);
+
+    listeners.connect();
+
+    expect(emitSpy).toHaveBeenCalledWith('join', '1-206-flowers');
+
+    jest.advanceTimersByTime(5000);
+    expect(emitSpy).toHaveBeenCalledTimes(3);
+
+    listeners.disconnect();
+
+    jest.advanceTimersByTime(10000);
+    expect(emitSpy).toHaveBeenCalledTimes(3);
   });
 });

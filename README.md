@@ -3,13 +3,13 @@
 A Node.js parcel-delivery simulation using Socket.IO, the `/caps`
 namespace, and vendor-specific rooms.
 
-Implemented: vendor pickup requests, driver delivery simulation, customer
-confirmation, timestamped logging through a shared event pool, and automated tests.
+Implemented: networked vendor pickup requests, driver delivery simulation,
+customer confirmation, timestamped server logging, and Socket.IO handler tests.
 
-GitHub Actions run successful.
+Lab 11 GitHub Actions passed; Lab 12 CI verification is pending.
 
 Lab 11 submitted. PR [Link](https://github.com/tonch-LIV/CA_ParcelServ/pull/1)  
-Lab 12 network flow verified; pending test updates and CI verification.
+Lab 12 network flow and local tests verified; pending CI and submission.
 
 ## Setup and Usage
 
@@ -34,21 +34,42 @@ Stop each application with Ctrl+C.
 
 ## Testing
 
-Lab 12 test adaptation is pending; the existing tests target Lab 11.
-
 Run the handler tests with coverage:
 
 ```bash
 npm test -- --runInBand
 ```
 
-Unit tests check vendor payloads and customer confirmation, driver logs
-and state emissions, and timestamped global logging. A connected-flow
-test checks the registered modules together.
+Tests check vendor and driver behavior, vendor interval cleanup, server
+logging, pickup broadcasting, and vendor-room routing.
+
+Real network delivery was verified manually with three running applications.
 
 GitHub Actions is configured to run the suite on pushes and pull requests.
 
 ## UML
+
+### Lab 12 Network Flow
+
+```mermaid
+sequenceDiagram
+    participant Vendor
+    participant Server as CAPS Server /caps
+    participant Driver
+
+    Note over Vendor,Driver: Clients connect separately to /caps
+    Vendor->>Server: join room 1-206-flowers
+
+    loop Every five seconds
+        Vendor->>Server: pickup(order)
+        Server->>Driver: broadcast pickup, excluding sender
+        Driver->>Server: in-transit(order)
+        Server->>Vendor: in-transit to order.store room
+        Driver->>Server: delivered(order)
+        Server->>Vendor: delivered to order.store room
+        Vendor->>Vendor: Thank customer
+    end
+```
 
 ### FlowChart
 
@@ -138,6 +159,9 @@ Top to bottom
   - updated project `main`, `start`, and `descriptiom`; `package.json`.
   - added the CAPS namespace, vendor-room joins, and package-event routing; `server/index.js`, `server/handler.js`.
   - connected vendor and driver through Socket.IO with recurring orders and vendor-room delivery notifications; `socket.js`, `vendor/`, `driver/`.
+  - corrected disconnect cleanup and adapted tests for socket emissions and server routing; `vendor/index.js`, client handler tests, `server/server-handler.test.js`.
+  - retired the Node event pool and obsolete tests; `eventPool.js`, `hub.js`, `hub.test.js`, `delivery-flow.test.js`.
+  - updated application coverage and network architecture documentation; `jest.config.js`, `README.md`.
 
 ## AI Assistance
 

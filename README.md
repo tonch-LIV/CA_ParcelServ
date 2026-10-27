@@ -7,8 +7,8 @@ confirmation, timestamped logging through a shared event pool, and automated tes
 
 GitHub Actions run successful.
 
-Pending: final submission.
-Lab 11 PR [Link](https://github.com/tonch-LIV/CA_ParcelServ/pull/1)
+Lab 11 submitted. PR [Link](https://github.com/tonch-LIV/CA_ParcelServ/pull/1)  
+Lab 12 pending: client conversion, network verification, and test updates.
 
 ## Setup and Usage
 
@@ -22,8 +22,8 @@ npm ci
 npm start
 ```
 
-Each run creates one order, logs its delivery states, thanks the customer,
-and exits.
+`npm start` starts the Socket.IO server on port 3000 using the `/caps`
+namespace. Vendor and driver startup commands are pending client conversion.
 
 ## Testing
 
@@ -42,6 +42,8 @@ GitHub Actions is configured to run the suite on pushes and pull requests.
 ## UML
 
 ### FlowChart
+
+#### Lab 11 Reference
 
 ```mermaid
 flowchart TD
@@ -74,6 +76,8 @@ flowchart TD
 5. **Vendor**: Receives the `delivered` notification and thanks the customer.
 
 ### Sequence Diagram
+
+#### Lab 11 Reference
 
 ```mermaid
 sequenceDiagram
@@ -109,17 +113,21 @@ Top to bottom
 ## Changelog
 
 - created assignment branch; `events`.
-- added UMLs
-- installed jest
-- `package.json`;
-  - ran `npm init -y`,
-  - installed and configured `jest` as dev dependency and application scripts -> `package-lock.json`,
-  - updated `main`, `script.start`, and `.test`, as well as `description`,
-- added shared event pool and timestamped package logging; `eventPool.js`, `hub.js`.
-- connected vendor pickup requests, driver delivery, and customer confirmation; `vendor/`, `driver/`, `hub.js`.
-- added vendor, driver, and logger unit tests with application coverage reporting; `vendor/vendor-handler.test.js`, `driver/driver-handler.test.js`, `hub.test.js`, `jest.config.js`.
-- verified connected vendor-to-driver delivery and customer confirmation; `delivery-flow.test.js`.
-- configured automated tests for pushes and pull requests; `.github/workflows/node.yml`.
+  - added UMLs
+  - installed jest
+  - `package.json`;
+    - ran `npm init -y`,
+    - installed and configured `jest` as dev dependency and application scripts -> `package-lock.json`,
+    - updated `main`, `script.start`, and `.test`, as well as `description`,
+  - added shared event pool and timestamped package logging; `eventPool.js`, `hub.js`.
+  - connected vendor pickup requests, driver delivery, and customer confirmation; `vendor/`, `driver/`, `hub.js`.
+  - added vendor, driver, and logger unit tests with application coverage reporting; `vendor/vendor-handler.test.js`, `driver/driver-handler.test.js`, `hub.test.js`, `jest.config.js`.
+  - verified connected vendor-to-driver delivery and customer confirmation; `delivery-flow.test.js`.
+  - configured automated tests for pushes and pull requests; `.github/workflows/node.yml`.
+- created assignmnet branch; `sockets`.
+  - installed `socket.io@4` `socket.io-client@4`; `package.json`, `package-lock.json`.
+  - updated project `main`, `start`, and `descriptiom`; `package.json`.
+  - added the CAPS namespace, vendor-room joins, and package-event routing; `server/index.js`, `server/handler.js`.
   
 ## AI Assistance
 

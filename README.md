@@ -6,10 +6,11 @@ namespace, and vendor-specific rooms.
 Implemented: networked vendor pickup requests, driver delivery simulation,
 customer confirmation, timestamped server logging, and Socket.IO handler tests.
 
-Lab 11 GitHub Actions passed; Lab 12 CI verification is pending.
+Lab 11 and Lab 12 GitHub Actions passed.
 
 Lab 11 submitted. PR [Link](https://github.com/tonch-LIV/CA_ParcelServ/pull/1)  
-Lab 12 network flow and local tests verified; pending CI and submission.
+Lab 12 network flow, local tests, and CI verified; pending submission.
+PR [Link](https://github.com/tonch-LIV/CA_ParcelServ/pull/2)
 
 ## Setup and Usage
 

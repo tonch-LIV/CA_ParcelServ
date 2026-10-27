@@ -1,8 +1,7 @@
 'use strict';
 
 const { randomUUID } = require('node:crypto');
-const eventPool = require('../eventPool');
-
+const socket = require('../socket');
 /**
  * Creates an order and requests pickup for the supplied store.
  * @param {string} store - The vendor's store name.
@@ -16,7 +15,7 @@ function requestPickup(store) {
     address: 'Portland, OR',
   };
 
-  eventPool.emit('pickup', order);
+  socket.emit('pickup', order);
 
   return order;
 }

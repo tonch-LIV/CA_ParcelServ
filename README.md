@@ -1,14 +1,16 @@
 # CA_ParcelServ
 
-A Node.js parcel-delivery simulation using a shared event pool.
+A Node.js parcel-delivery simulation using Socket.IO, the `/caps`
+namespace, and vendor-specific rooms.
 
-Implemented: vendor pickup requests, driver delivery simulation, customer
-confirmation, timestamped logging through a shared event pool, and automated tests.
+Implemented: networked vendor pickup requests, driver delivery simulation,
+customer confirmation, timestamped server logging, and Socket.IO handler tests.
 
-GitHub Actions run successful.
+Lab 11 and Lab 12 GitHub Actions passed.
 
-Pending: final submission.
-Lab 11 PR [Link](https://github.com/tonch-LIV/CA_ParcelServ/pull/1)
+Lab 11 submitted. PR [Link](https://github.com/tonch-LIV/CA_ParcelServ/pull/1)  
+Lab 12 network flow, local tests, and CI verified; pending submission.
+PR [Link](https://github.com/tonch-LIV/CA_ParcelServ/pull/2)
 
 ## Setup and Usage
 
@@ -22,8 +24,14 @@ npm ci
 npm start
 ```
 
-Each run creates one order, logs its delivery states, thanks the customer,
-and exits.
+Start each application in a separate terminal, in this order:
+
+1. Server: `npm start`.
+2. Driver: `npm run driver`; wait for its connection message.
+3. Vendor: `npm run vendor`.
+
+The vendor creates an order immediately, then every five seconds.
+Stop each application with Ctrl+C.
 
 ## Testing
 
@@ -33,15 +41,40 @@ Run the handler tests with coverage:
 npm test -- --runInBand
 ```
 
-Unit tests check vendor payloads and customer confirmation, driver logs
-and state emissions, and timestamped global logging. A connected-flow
-test checks the registered modules together.
+Tests check vendor and driver behavior, vendor interval cleanup, server
+logging, pickup broadcasting, and vendor-room routing.
+
+Real network delivery was verified manually with three running applications.
 
 GitHub Actions is configured to run the suite on pushes and pull requests.
 
 ## UML
 
+### Lab 12 Network Flow
+
+```mermaid
+sequenceDiagram
+    participant Vendor
+    participant Server as CAPS Server /caps
+    participant Driver
+
+    Note over Vendor,Driver: Clients connect separately to /caps
+    Vendor->>Server: join room 1-206-flowers
+
+    loop Every five seconds
+        Vendor->>Server: pickup(order)
+        Server->>Driver: broadcast pickup, excluding sender
+        Driver->>Server: in-transit(order)
+        Server->>Vendor: in-transit to order.store room
+        Driver->>Server: delivered(order)
+        Server->>Vendor: delivered to order.store room
+        Vendor->>Vendor: Thank customer
+    end
+```
+
 ### FlowChart
+
+#### Lab 11 Reference
 
 ```mermaid
 flowchart TD
@@ -74,6 +107,8 @@ flowchart TD
 5. **Vendor**: Receives the `delivered` notification and thanks the customer.
 
 ### Sequence Diagram
+
+#### Lab 11 Reference
 
 ```mermaid
 sequenceDiagram
@@ -109,18 +144,26 @@ Top to bottom
 ## Changelog
 
 - created assignment branch; `events`.
-- added UMLs
-- installed jest
-- `package.json`;
-  - ran `npm init -y`,
-  - installed and configured `jest` as dev dependency and application scripts -> `package-lock.json`,
-  - updated `main`, `script.start`, and `.test`, as well as `description`,
-- added shared event pool and timestamped package logging; `eventPool.js`, `hub.js`.
-- connected vendor pickup requests, driver delivery, and customer confirmation; `vendor/`, `driver/`, `hub.js`.
-- added vendor, driver, and logger unit tests with application coverage reporting; `vendor/vendor-handler.test.js`, `driver/driver-handler.test.js`, `hub.test.js`, `jest.config.js`.
-- verified connected vendor-to-driver delivery and customer confirmation; `delivery-flow.test.js`.
-- configured automated tests for pushes and pull requests; `.github/workflows/node.yml`.
-  
+  - added UMLs
+  - installed jest
+  - `package.json`;
+    - ran `npm init -y`,
+    - installed and configured `jest` as dev dependency and application scripts -> `package-lock.json`,
+    - updated `main`, `script.start`, and `.test`, as well as `description`,
+  - added shared event pool and timestamped package logging; `eventPool.js`, `hub.js`.
+  - connected vendor pickup requests, driver delivery, and customer confirmation; `vendor/`, `driver/`, `hub.js`.
+  - added vendor, driver, and logger unit tests with application coverage reporting; `vendor/vendor-handler.test.js`, `driver/driver-handler.test.js`, `hub.test.js`, `jest.config.js`.
+  - verified connected vendor-to-driver delivery and customer confirmation; `delivery-flow.test.js`.
+  - configured automated tests for pushes and pull requests; `.github/workflows/node.yml`.
+- created assignmnet branch; `sockets`.
+  - installed `socket.io@4` `socket.io-client@4`; `package.json`, `package-lock.json`.
+  - updated project `main`, `start`, and `descriptiom`; `package.json`.
+  - added the CAPS namespace, vendor-room joins, and package-event routing; `server/index.js`, `server/handler.js`.
+  - connected vendor and driver through Socket.IO with recurring orders and vendor-room delivery notifications; `socket.js`, `vendor/`, `driver/`.
+  - corrected disconnect cleanup and adapted tests for socket emissions and server routing; `vendor/index.js`, client handler tests, `server/server-handler.test.js`.
+  - retired the Node event pool and obsolete tests; `eventPool.js`, `hub.js`, `hub.test.js`, `delivery-flow.test.js`.
+  - updated application coverage and network architecture documentation; `jest.config.js`, `README.md`.
+
 ## AI Assistance
 
 - Codex supplied UML drafts, architecture review, setup guidance, application code, unit and connected-flow tests, coverage configuration, and the GitHub Actions workflow.

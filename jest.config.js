@@ -3,8 +3,8 @@
 module.exports = {
   testEnvironment: 'node',
   collectCoverageFrom: [
-    'eventPool.js',
-    'hub.js',
+    'socket.js',
+    'server/**/*.js',
     'vendor/**/*.js',
     'driver/**/*.js',
     '!**/*.test.js',

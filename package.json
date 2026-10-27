@@ -1,10 +1,11 @@
 {
   "name": "ca_parcelserv",
-  "version": "1.0.0",
-  "description": "CAPS Phase 1 parcel-delivery simulation using Node.js events",
-  "main": "hub.js",
+  "version": "2.0.0",
+  "description": "CAPS Phase 2 parcel-delivery simulation using Socket.IO",
   "scripts": {
-    "start": "node hub.js",
+    "start": "node server/index.js",
+    "driver": "node driver/index.js",
+    "vendor": "node vendor/index.js",
     "test": "jest --coverage"
   },
   "keywords": [],
@@ -12,5 +13,9 @@
   "license": "MIT",
   "devDependencies": {
     "jest": "^30.5.2"
+  },
+  "dependencies": {
+    "socket.io": "^4.8.4",
+    "socket.io-client": "^4.8.4"
   }
 }

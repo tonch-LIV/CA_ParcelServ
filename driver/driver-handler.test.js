@@ -1,6 +1,12 @@
 'use strict';
 
-const eventPool = require('../eventPool');
+jest.mock('../socket', () => ({
+  emit: jest.fn(),
+  on: jest.fn(),
+  connect: jest.fn(),
+}));
+
+const socket = require('../socket');
 const handlePickup = require('./handler');
 
 describe('driver handler', () => {
@@ -8,7 +14,8 @@ describe('driver handler', () => {
   let logSpy;
 
   beforeEach(() => {
-    emitSpy = jest.spyOn(eventPool, 'emit').mockReturnValue(true);
+    jest.clearAllMocks();
+    emitSpy = jest.spyOn(socket, 'emit').mockReturnValue(true);
     logSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
   });
 

@@ -45,31 +45,75 @@ describe('vendor handlers', () => {
     expect(firstOrder.orderId).not.toBe(secondOrder.orderId);
   });
 
-  test('thanks the customer named in the delivered order', () => {
-    handleDelivered({ customer: 'Sam Rivera' });
+  test('logs delivery details and acknowledges the notification', () => {
+    const order = {
+      store: 'acme-widgets',
+      orderId: 'order-123',
+      customer: 'Sam Rivera',
+      address: 'Portland, OR',
+    };
 
-    expect(logSpy).toHaveBeenCalledTimes(1);
-    expect(logSpy).toHaveBeenCalledWith(
+    handleDelivered({
+      event: 'delivered',
+      messageId: order.orderId,
+      clientId: order.store,
+      order,
+    });
+
+    expect(logSpy).toHaveBeenCalledTimes(2);
+    expect(logSpy).toHaveBeenNthCalledWith(
+      1,
+      'VENDOR: acme-widgets delivered order-123',
+      order,
+    );
+    expect(logSpy).toHaveBeenNthCalledWith(
+      2,
       'Thank you for your order Sam Rivera',
     );
+
+    expect(emitSpy).toHaveBeenCalledTimes(1);
+    expect(emitSpy).toHaveBeenCalledWith('received', {
+      clientId: order.store,
+      event: 'delivered',
+      messageId: order.orderId,
+    });
   });
 
   test('stops creating orders when the vendor disconnects', () => {
     jest.useFakeTimers();
+    jest.replaceProperty(process, 'argv', [
+      'node',
+      'vendor/index.js',
+      'acme-widgets',
+    ]);
 
     require('./index');
     const listeners = Object.fromEntries(socket.on.mock.calls);
 
     listeners.connect();
 
-    expect(emitSpy).toHaveBeenCalledWith('join', '1-206-flowers');
+    const subscription = {
+      clientId: 'acme-widgets',
+      event: 'delivered',
+    };
+
+    expect(emitSpy).toHaveBeenNthCalledWith(
+      1,
+      'subscribe',
+      subscription,
+    );
+    expect(emitSpy).toHaveBeenNthCalledWith(
+      2,
+      'getAll',
+      subscription,
+    );
 
     jest.advanceTimersByTime(5000);
-    expect(emitSpy).toHaveBeenCalledTimes(3);
+    expect(emitSpy).toHaveBeenCalledTimes(4);
 
     listeners.disconnect();
 
     jest.advanceTimersByTime(10000);
-    expect(emitSpy).toHaveBeenCalledTimes(3);
+    expect(emitSpy).toHaveBeenCalledTimes(4);
   });
 });

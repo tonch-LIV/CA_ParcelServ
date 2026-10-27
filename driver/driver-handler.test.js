@@ -31,7 +31,12 @@ describe('driver handler', () => {
       address: 'Portland, OR',
     };
 
-    handlePickup(order);
+    handlePickup({
+      event: 'pickup',
+      messageId: order.orderId,
+      clientId: order.store,
+      order,
+    });
 
     expect(logSpy).toHaveBeenCalledTimes(2);
     expect(logSpy).toHaveBeenNthCalledWith(
@@ -43,8 +48,13 @@ describe('driver handler', () => {
       'DRIVER: delivered order-123.',
     );
 
-    expect(emitSpy).toHaveBeenCalledTimes(2);
+    expect(emitSpy).toHaveBeenCalledTimes(3);
     expect(emitSpy).toHaveBeenNthCalledWith(1, 'in-transit', order);
     expect(emitSpy).toHaveBeenNthCalledWith(2, 'delivered', order);
+    expect(emitSpy).toHaveBeenNthCalledWith(3, 'received', {
+      clientId: order.store,
+      event: 'pickup',
+      messageId: order.orderId,
+    });
   });
 });

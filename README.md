@@ -12,8 +12,8 @@ Lab 11 submitted.
 PR [Link](https://github.com/tonch-LIV/CA_ParcelServ/pull/1)  
 Lab 12 network flow, local tests, and CI verified; Submitted.  
 PR [Link](https://github.com/tonch-LIV/CA_ParcelServ/pull/2)  
-Lab 13: queued pickup and delivery notifications and offline catch-up
-verified; pending handler-test updates and CI verification.
+Lab 13 queue storage, offline catch-up, acknowledgment removal, and local
+handler tests verified; pending CI verification and submission.
 
 ## Setup and Usage
 
@@ -40,23 +40,39 @@ Stop applications with Ctrl+C.
 
 ## Testing
 
-Queue-module tests pass; application handler tests are being adapted
-for queued notification payloads.
-
 Run the handler tests with coverage:
 
 ```bash
 npm test -- --runInBand
 ```
 
-Tests check vendor and driver behavior, vendor interval cleanup, server
-logging, pickup broadcasting, and vendor-room routing.
+Tests cover queue retention and isolation, subscriptions, publication, catch-up, acknowledgment removal, client notifications, and interval cleanup.  
 
-Real network delivery was verified manually with three running applications.
+Real network delivery and offline catch-up were verified manually using
+the server, driver, and two vendor applications.  
 
 GitHub Actions is configured to run the suite on pushes and pull requests.
 
 ## UML
+
+### Lab 13 Catch-Up and Acknowledgment
+
+```mermaid
+sequenceDiagram
+    participant Client as Driver or vendor
+    participant Hub as CAPS /caps
+    participant Queue as Queue by store and event
+
+    Note over Hub,Queue: Incoming pickup/delivered notifications are stored before sending
+    Client->>Hub: subscribe(clientId, event)
+    Client->>Hub: getAll(clientId, event)
+    Hub->>Queue: List pending notifications
+    Queue-->>Hub: Retained messages
+    Hub-->>Client: Replay pickup/delivered messages
+    Client->>Client: Process message.order
+    Client->>Hub: received(clientId, event, messageId)
+    Hub->>Queue: Remove acknowledged notification
+```
 
 ### Lab 12 Network Flow
 
@@ -175,6 +191,8 @@ Top to bottom
   - added notification storage, non-destructive retrieval, and acknowledgment removal with unit tests; `server/queue.js`, `server/queue.test.js`.
   - integrated subscriptions, acknowledgment removal, and notification replay; `server/handler.js`, `server/index.js`.
   - added two vendor identities and client catch-up on connection; `vendor/`, `driver/`.
+  - adapted handler tests for queued payloads, subscriptions, replay, and acknowledgment removal; client handler tests, `server/server-handler.test.js`.
+  - documented the notification acknowledgment lifecycle; `README.md`.
 
 ## AI Assistance
 
